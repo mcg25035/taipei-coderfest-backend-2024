@@ -147,6 +147,27 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
         if (warpEvent.category.includes(req.body.category)) {
             warpEventsFiltered.push(warpEvent);
         }
+        const comments = await WarpEventCommentModel.find({
+            warpEventId: req.params.id,
+        });
+        warpEvent.comments = comments;
+        var upvotes = 0;
+        var downvotes = 0;
+        const votes = await WarpEventVoteModel.find({
+            warpEventId: req.params.id,
+        });
+        for (const vote of votes) {
+            if (vote.vote === 1) {
+                upvotes++;
+            } else if (vote.vote === -1) {
+                downvotes++;
+            }
+        }
+        warpEvent.upvotes = upvotes;
+        warpEvent.downvotes = downvotes;
+
+        
+
     }
 
     res.json(warpEventsFiltered);

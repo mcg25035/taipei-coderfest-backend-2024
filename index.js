@@ -168,10 +168,11 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
         if (!warpEventDbReference.category) continue;
         if (warpEventDbReference.category.includes(req.body.category)) {
             var warpEvent = warpEventDbReference.toObject();
+            var warpEventId = warpEventDbReference.id;
             var upvotes = 0;
             var downvotes = 0;
             const votes = await WarpEventVoteModel.find({
-                warpEventId: req.params.id,
+                warpEventId: warpEventId,
             });
             for (const vote of votes) {
                 if (vote.vote === 1) {
@@ -182,7 +183,7 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
                 }
             }    
             const comments = await WarpEventCommentModel.find({
-                warpEventId: warpEvent.id,
+                warpEventId: warpEventId,
             });
             warpEvent.comments = comments;
             warpEvent.upvotes = upvotes;

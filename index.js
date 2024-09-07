@@ -334,7 +334,7 @@ app.get('/api/warp_event/:id/comment/:commentId', async (req, res) => {
     res.end();
 })
 
-app.purge('/api/resetDB', async (req, res) => {
+app.patch('/api/resetDB', async (req, res) => {
     await WarpEventModel.deleteMany({});
     await WarpEventVoteModel.deleteMany({});
     await WarpEventCommentModel.deleteMany({});

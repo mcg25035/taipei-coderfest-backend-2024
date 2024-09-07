@@ -334,6 +334,16 @@ app.get('/api/warp_event/:id/comment/:commentId', async (req, res) => {
     res.end();
 })
 
+app.purge('/api/resetDB', async (req, res) => {
+    await WarpEventModel.deleteMany({});
+    await WarpEventVoteModel.deleteMany({});
+    await WarpEventCommentModel.deleteMany({});
+    res.status(200).json({
+        message: "Database reset",
+    });
+    res.end();
+})
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on http://0.0.0.0:${port}`);
 });

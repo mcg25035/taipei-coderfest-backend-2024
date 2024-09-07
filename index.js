@@ -124,6 +124,28 @@ app.post('/api/warp_event/getByAABBRange', async (req, res) => {
     res.end();
 })
 
+app.post('/api/warp_event/getByCategory', async (req, res) => {
+    if (!req.body.category) {
+        res.status(400).json({
+            error: 'Missing required fields',
+        });
+        res.end();
+        return;
+    }
+
+    const warpEvents = await WarpEventModel.find();
+    var warpEventsFiltered = [];
+    for (const warpEvent of warpEvents) {
+        if (!warpEvent.category) continue;
+        if (warpEvent.category.includes(req.body.category)) {
+            warpEventsFiltered.push(warpEvent);
+        }
+    }
+
+    res.json(warpEventsFiltered);
+    res.end();
+});
+
 app.get('/api/warp_event/:id/vote', async (req, res) => {
     if (!req.query.userId) {
         res.status(400).json({

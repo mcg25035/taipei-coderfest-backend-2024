@@ -142,36 +142,34 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
 
     const warpEvents = await WarpEventModel.find();
     var warpEventsFiltered = [];
-    for (const warpEvent of warpEvents) {
-        if (!warpEvent.category) continue;
-        if (warpEvent.category.includes(req.body.category)) {
+    for (const warpEventDbReference of warpEvents) {
+        
+        if (!warpEventDbReference.category) continue;
+        if (warpEventDbReference.category.includes(req.body.category)) {
+            var warpEvent = warpEventDbReference.toObject();
+            var upvotes = 0;
+            var downvotes = 0;
+            const votes = await WarpEventVoteModel.find({
+                warpEventId: req.params.id,
+            });
+            for (const vote of votes) {
+                if (vote.vote === 1) {
+                    upvotes++;
+                }
+                else if (vote.vote === -1) {
+                    downvotes++;
+                }
+            }    
+            const comments = await WarpEventCommentModel.find({
+                warpEventId: warpEvent.id,
+            });
+            warpEvent.comments = comments;
+            warpEvent.upvotes = upvotes;
+            warpEvent.downvotes = downvotes;
+            
+
             warpEventsFiltered.push(warpEvent);
         }
-        const dbCommentsReference = await WarpEventCommentModel.find({
-            warpEventId: req.params.id,
-        });
-
-        var comments = [];
-        for (const comment of dbCommentsReference) {
-            comments.push(comment.toObject());
-        }
-        
-        warpEvent.comments = comments;
-        var upvotes = 0;
-        var downvotes = 0;
-        const votes = await WarpEventVoteModel.find({
-            warpEventId: req.params.id,
-        });
-        for (const vote of votes) {
-            if (vote.vote === 1) {
-                upvotes++;
-            } else if (vote.vote === -1) {
-                downvotes++;
-            }
-        }
-        warpEvent.upvotes = upvotes;
-        warpEvent.downvotes = downvotes;
-
 
 
     }

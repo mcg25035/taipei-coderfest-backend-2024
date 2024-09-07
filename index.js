@@ -147,9 +147,15 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
         if (warpEvent.category.includes(req.body.category)) {
             warpEventsFiltered.push(warpEvent);
         }
-        const comments = await WarpEventCommentModel.find({
+        const dbCommentsReference = await WarpEventCommentModel.find({
             warpEventId: req.params.id,
         });
+
+        var comments = [];
+        for (const comment of dbCommentsReference) {
+            comments.push(comment.toObject());
+        }
+        
         warpEvent.comments = comments;
         var upvotes = 0;
         var downvotes = 0;
@@ -166,7 +172,7 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
         warpEvent.upvotes = upvotes;
         warpEvent.downvotes = downvotes;
 
-        
+
 
     }
 

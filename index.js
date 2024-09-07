@@ -73,6 +73,13 @@ app.post('/api/warp_event', async (req, res) => {
 })
 
 app.put('/api/warp_event/:id/share', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     const warpEvent = await WarpEventModel.findById(req.params.id);
     if (!warpEvent) {
         res.status(404).json({
@@ -92,6 +99,13 @@ app.put('/api/warp_event/:id/share', async (req, res) => {
 })
 
 app.get('/api/warp_event/:id', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     var warpEvent = await WarpEventModel.findById(req.params.id);
     if (!warpEvent) {
         res.status(404).json({
@@ -201,6 +215,13 @@ app.post('/api/warp_event/getByCategory', async (req, res) => {
 });
 
 app.get('/api/warp_event/:id/vote', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     if (!req.query.userId) {
         res.status(400).json({
             error: 'Missing required fields',
@@ -237,6 +258,13 @@ app.get('/api/warp_event/:id/vote', async (req, res) => {
 })
 
 app.put('/api/warp_event/:id/vote', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     if (!req.body.userId || ![-1, 0, 1].includes(req.body.vote)) {
         res.status(400).json({
             error: 'Missing required fields',
@@ -273,6 +301,13 @@ app.put('/api/warp_event/:id/vote', async (req, res) => {
 })
 
 app.post('/api/warp_event/:id/comment', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     if (!req.body.userId || !req.body.text) {
         res.status(400).json({
             error: 'Missing required fields',
@@ -305,6 +340,13 @@ app.post('/api/warp_event/:id/comment', async (req, res) => {
 })
 
 app.delete('/api/warp_event/:id/comment/:commentId', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     const comment = await WarpEventCommentModel.findById(req.params.commentId);
     if (!comment) {
         res.status(404).json({
@@ -322,6 +364,13 @@ app.delete('/api/warp_event/:id/comment/:commentId', async (req, res) => {
 })
 
 app.get('/api/warp_event/:id/comment/:commentId', async (req, res) => {
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
     const comment = await WarpEventCommentModel.findById(req.params.commentId);
     if (!comment) {
         res.status(404).json({

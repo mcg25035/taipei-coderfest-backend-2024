@@ -1,10 +1,12 @@
 const express = require('express');
 const Mongoose = require('mongoose');
+const compression = require('compression');
 const cors = require('cors');
 
 
 const app = express();
 app.use(express.json({limit: '50mb'}));
+app.use(compression());
 app.use(cors({
     origin: '*',
     methods: 'GET,POST,PUT,DELETE',
@@ -44,6 +46,43 @@ const WarpEventCommentModel = Mongoose.model('WarpEventComment', WarpEventCommen
 
 Mongoose.connect('mongodb://localhost:27017/', {directConnection: true});
 
+app.put('/api/warp_event/:id', async (req, res) => {
+    var lat = req.body.lat;
+    var lng = req.body.lng;
+    
+    if (!Mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(400).json({
+            error: 'Invalid ID',
+        });
+        res.end();
+        return;
+    }
+
+    const warpEvent = await WarpEventModel.findById(req.params.id);
+    if (!warpEvent) {
+        res.status(404).json({
+            error: 'WarpEvent not found',
+        });
+        res.end();
+        return;
+    }
+
+    if (!lat || !lng) {
+        res.status(400).json({
+            error: 'Missing required fields',
+        });
+        res.end();
+        return;
+    }
+
+    warpEvent.lat = lat;
+    warpEvent.lng = lng;
+    await warpEvent.save();
+    res.status(200).json({
+        message: "WarpEvent updated",
+    });
+    res.end();
+})
 
 app.post('/api/warp_event', async (req, res) => {
     if (!req.body.lng || !req.body.lat || !req.body.title || !req.body.category) {
